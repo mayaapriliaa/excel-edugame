@@ -1,0 +1,6 @@
+{
+  "name": "Excel EduGame: Petualangan Belajar Microsoft Excel",
+  "description": "Media pembelajaran interaktif berbasis game Microsoft Excel untuk siswa kelas X Informatika SMK Muhammadiyah Tawang Rejo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

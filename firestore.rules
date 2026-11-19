@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default-deny all undefined paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isValidStudent(data) {
+      return data.keys().hasAll(['id', 'name', 'className'])
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() >= 3 && data.name.size() <= 80
+        && data.className is string && data.className.size() <= 60;
+    }
+
+    function isValidGameHistory(data) {
+      return data.keys().hasAll(['id', 'studentId', 'gameType', 'score', 'completedAt'])
+        && data.id is string && data.id.size() <= 128
+        && data.studentId is string && data.studentId.size() <= 128
+        && data.gameType in ['quiz', 'puzzle', 'formula']
+        && data.score is number && data.score >= 0 && data.score <= 100;
+    }
+
+    // Students collection: Public read for leaderboard, validated creation/update
+    match /students/{studentId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(studentId) && isValidStudent(request.resource.data);
+      allow delete: if request.auth != null;
+    }
+
+    // Game history collection: Public read for teacher dashboards, validated creation
+    match /game_history/{historyId} {
+      allow get, list: if true;
+      allow create: if isValidId(historyId) && isValidGameHistory(request.resource.data);
+      allow update, delete: if request.auth != null;
+    }
+  }
+}

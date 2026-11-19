@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Student": {
+      "title": "Student",
+      "description": "Profil identitas siswa peserta game pembelajaran Microsoft Excel",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Pengenal unik siswa",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Nama lengkap siswa",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "className": {
+          "type": "string",
+          "description": "Kelas siswa di SMK Muhammadiyah Tawang Rejo",
+          "maxLength": 60
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Waktu pertama kali terdaftar (timestamp ms)"
+        },
+        "lastActive": {
+          "type": "number",
+          "description": "Waktu terakhir aktif mengerjakan tantangan (timestamp ms)"
+        }
+      },
+      "required": ["id", "name", "className"]
+    },
+    "GameHistory": {
+      "title": "GameHistory",
+      "description": "Catatan riwayat sesi pengerjaan game oleh siswa",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Pengenal unik sesi game",
+          "maxLength": 128
+        },
+        "studentId": {
+          "type": "string",
+          "description": "ID siswa yang mengerjakan",
+          "maxLength": 128
+        },
+        "studentName": {
+          "type": "string",
+          "description": "Nama siswa",
+          "maxLength": 80
+        },
+        "className": {
+          "type": "string",
+          "description": "Kelas siswa",
+          "maxLength": 60
+        },
+        "gameType": {
+          "type": "string",
+          "enum": ["quiz", "puzzle", "formula"],
+          "description": "Jenis game yang dimainkan"
+        },
+        "score": {
+          "type": "number",
+          "description": "Skor yang diperoleh (0 - 100)"
+        },
+        "maxScore": {
+          "type": "number",
+          "description": "Skor maksimal game (100)"
+        },
+        "durationSeconds": {
+          "type": "number",
+          "description": "Durasi pengerjaan dalam detik"
+        },
+        "completedAt": {
+          "type": "number",
+          "description": "Waktu penyelesaian (timestamp ms)"
+        }
+      },
+      "required": ["id", "studentId", "gameType", "score", "completedAt"]
+    }
+  },
+  "firestore": {
+    "/students/{studentId}": {
+      "schema": {
+        "$ref": "#/entities/Student"
+      },
+      "description": "Koleksi profil siswa yang terdaftar dan skor terbaik"
+    },
+    "/game_history/{historyId}": {
+      "schema": {
+        "$ref": "#/entities/GameHistory"
+      },
+      "description": "Koleksi riwayat pengerjaan game siswa untuk rekapitulasi guru"
+    }
+  }
+}
